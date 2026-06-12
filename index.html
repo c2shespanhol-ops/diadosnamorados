@@ -38,7 +38,7 @@
         #texto-mensagem { color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; transition: all 0.5s ease; }
         .galeria { position: relative; width: 100%; height: 320px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 20px; background-color: #f0f0f0; }
         .galeria img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s ease-in-out; }
-        .galeria img.ativa { opacity: 1; }
+        .galeria img.ativa { opacity: 1; z-index: 2; }
         .coracao { position: absolute; color: #ff7675; font-size: 1.5rem; pointer-events: none; animation: flutuar 4s linear infinite; opacity: 0; }
         @keyframes flutuar {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
@@ -84,12 +84,20 @@
         const galeriaContainer = document.getElementById('galeria-fotos');
         let primeira = true;
         let intervaloCarrossel;
+        let elementoBuqueSecreto = null;
 
         function inserirFoto(nomeCompleto) {
             const img = document.createElement('img');
             img.src = encodeURIComponent(nomeCompleto);
             img.alt = "Nosso Momento";
+            
             img.onerror = function() { this.remove(); };
+            
+            // Se for a foto do buquê que já está na lista, guardamos a referência dela
+            if (nomeCompleto === "IMG_2760.jpeg") {
+                elementoBuqueSecreto = img;
+            }
+
             if (primeira) {
                 img.classList.add('ativa');
                 primeira = false;
@@ -97,7 +105,7 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Suas fotos mantidas perfeitamente
+        // Suas fotos mantidas com precisão absoluta
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -143,7 +151,7 @@
         }
 
         function rodarCarrossel() {
-            const imagens = document.querySelectorAll('.galeria img');
+            const imagens = galeriaContainer.querySelectorAll('img');
             let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
             if (imagens.length > 0) {
                 if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
@@ -153,24 +161,28 @@
         }
 
         function dispararPedidoCasamento() {
-            // 1. Para o carrossel na hora
+            // 1. Trava o carrossel imediatamente
             clearInterval(intervaloCarrossel);
 
-            // 2. Apaga a foto atual que ficou visível
-            const fotoAtiva = document.querySelector('.galeria img.ativa');
-            if (fotoAtiva) fotoAtiva.classList.remove('ativa');
+            // 2. Captura todas as imagens carregadas na galeria
+            const todasImagens = galeriaContainer.querySelectorAll('img');
+            
+            // 3. Remove a classe ativa de qualquer uma que estivesse aparecendo
+            todasImagens.forEach(img => img.classList.remove('ativa'));
 
-            // 3. Limpa o container da galeria para receber apenas o buquê definitivo
-            galeriaContainer.innerHTML = '';
+            // 4. Se o Chrome carregou nossa foto do buquê com sucesso, nós a fixamos
+            if (elementoBuqueSecreto) {
+                elementoBuqueSecreto.classList.add('ativa');
+            } else {
+                // Caso extremo de segurança do Chrome, reconstrói usando a codificação perfeita
+                const imgBackup = document.createElement('img');
+                imgBackup.src = encodeURIComponent("IMG_2760.jpeg");
+                imgBackup.alt = "Nosso Buquê";
+                imgBackup.classList.add('ativa');
+                galeriaContainer.appendChild(imgBackup);
+            }
 
-            // 4. Cria a imagem do buquê apontando de forma direta e limpa para o seu arquivo
-            const imgBuque = document.createElement('img');
-            imgBuque.src = "IMG_2760.jpeg"; // Chamada direta sem filtros para o iOS aceitar
-            imgBuque.alt = "Nosso Buquê";
-            imgBuque.classList.add('ativa');
-            galeriaContainer.appendChild(imgBuque);
-
-            // 5. Atualiza os textos da tela
+            // 5. Muda os textos do cartão para o pedido
             document.getElementById('titulo-cartao').innerText = "Olha para mim agora... ❤️";
             
             const textoMensagem = document.getElementById('texto-mensagem');
