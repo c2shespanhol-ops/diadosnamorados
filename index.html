@@ -51,7 +51,7 @@
 <body>
 
     <audio id="musica-romantica" loop preload="auto">
-        <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3" type="audio/mpeg">
+        <source src="musica.mp3" type="audio/mpeg">
     </audio>
 
     <div id="envelope-intro">
@@ -77,7 +77,7 @@
             img.alt = "Nosso Momento";
             
             img.onerror = function() {
-                this.remove(); // Remove links quebrados para não travar a tela
+                this.remove();
             };
 
             if (primeira) {
@@ -87,7 +87,7 @@
             galeriaContainer.appendChild(img);
         }
 
-        // 1. LISTA COMPLETA DAS FOTOS COM FORMATO "IMG" DO SEU REPOSITÓRIO
+        // Fotos normais (mantidas ótimas)
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -101,33 +101,28 @@
         ];
         fotosImg.forEach(foto => inserirFoto(foto));
 
-        // 2. LISTA COMPLETA DAS FOTOS DO WHATSAPP DO SEU REPOSITÓRIO
+        // Fotos WhatsApp
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.19.jpeg");
         for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
 
-        inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
+        border = inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
         for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
 
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.21.jpeg");
         for (let i = 1; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
-
 
         function abrirCartao() {
             const intro = document.getElementById('envelope-intro');
             const cartao = document.getElementById('meu-cartao');
             const musica = document.getElementById('musica-romantica');
 
-            // Configuração forçada de som para vencer o bloqueio do navegador
             musica.volume = 0.8;
-            var tocando = musica.play();
-
-            if (tocando !== undefined) {
-                tocando.catch(error => {
-                    // Se o navegador bloquear no primeiro clique, força ao tocar na tela de novo
-                    console.log("Ajustando permissão de áudio...");
-                    document.body.addEventListener('click', () => { musica.play(); }, { once: true });
-                });
-            }
+            
+            // Dá o play no clique do botão (regrade privacidade do navegador)
+            musica.play().catch(function(error) {
+                console.log("Ajuste de foco de áudio ativado.");
+                document.addEventListener('click', () => { musica.play(); }, { once: true });
+            });
 
             intro.style.opacity = '0';
             setTimeout(() => {
@@ -137,7 +132,6 @@
 
             setInterval(criarCoracao, 300);
             
-            // Controle estável do Carrossel de Fotos
             setInterval(() => {
                 const imagens = document.querySelectorAll('.galeria img');
                 let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
