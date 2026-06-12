@@ -93,8 +93,8 @@
             
             img.onerror = function() { this.remove(); };
             
-            // Se for a foto do buquê que já está na lista, guardamos a referência dela
-            if (nomeCompleto === "IMG_2760.jpeg") {
+            // MÉTODO INFALÍVEL: Identifica a foto que contém o número 2760 indepedente da extensão (.jpg, .jpeg, etc.)
+            if (nomeCompleto.includes("2760")) {
                 elementoBuqueSecreto = img;
             }
 
@@ -105,7 +105,6 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Suas fotos mantidas com precisão absoluta
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -161,30 +160,17 @@
         }
 
         function dispararPedidoCasamento() {
-            // 1. Trava o carrossel imediatamente
             clearInterval(intervaloCarrossel);
 
-            // 2. Captura todas as imagens carregadas na galeria
             const todasImagens = galeriaContainer.querySelectorAll('img');
-            
-            // 3. Remove a classe ativa de qualquer uma que estivesse aparecendo
             todasImagens.forEach(img => img.classList.remove('ativa'));
 
-            // 4. Se o Chrome carregou nossa foto do buquê com sucesso, nós a fixamos
+            // Resgata o elemento exato capturado no início
             if (elementoBuqueSecreto) {
                 elementoBuqueSecreto.classList.add('ativa');
-            } else {
-                // Caso extremo de segurança do Chrome, reconstrói usando a codificação perfeita
-                const imgBackup = document.createElement('img');
-                imgBackup.src = encodeURIComponent("IMG_2760.jpeg");
-                imgBackup.alt = "Nosso Buquê";
-                imgBackup.classList.add('ativa');
-                galeriaContainer.appendChild(imgBackup);
             }
 
-            // 5. Muda os textos do cartão para o pedido
             document.getElementById('titulo-cartao').innerText = "Olha para mim agora... ❤️";
-            
             const textoMensagem = document.getElementById('texto-mensagem');
             textoMensagem.innerHTML = 'Passamos por tantos momentos lindos juntos e a nossa história é o meu maior orgulho. Eu não tenho dúvidas de que quero viver o resto dos meus dias ao seu lado.<br><br><span class="pedido-casamento">Quer casar comigo? 💍</span>';
         }
