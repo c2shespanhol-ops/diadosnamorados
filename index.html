@@ -1,614 +1,179 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Para Você, com Todo Meu Amor</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --rose: #e8a0b0;
-    --blush: #f7d6de;
-    --cream: #fff8f0;
-    --wine: #8b2252;
-    --gold: #c9a96e;
-    --text-dark: #3a1a2e;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--cream);
-    font-family: 'Lato', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-  }
-
-  /* ── INTRO SCREEN ── */
-  #intro {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #fff0f5 0%, #ffe4ef 50%, #ffd6e7 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    gap: 2rem;
-  }
-
-  #intro .heart-big {
-    font-size: 5rem;
-    animation: heartbeat 1.2s ease-in-out infinite;
-  }
-
-  #intro h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.6rem, 5vw, 2.8rem);
-    color: var(--wine);
-    text-align: center;
-    padding: 0 1.5rem;
-    line-height: 1.4;
-  }
-
-  #intro p {
-    color: #a05070;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-  }
-
-  #btn-start {
-    background: linear-gradient(135deg, var(--wine), #c0395a);
-    color: #fff;
-    border: none;
-    padding: 1rem 3rem;
-    border-radius: 50px;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 8px 30px rgba(139,34,82,0.35);
-    transition: transform .2s, box-shadow .2s;
-  }
-
-  #btn-start:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(139,34,82,0.5); }
-
-  /* ── SLIDESHOW ── */
-  #slideshow {
-    position: fixed;
-    inset: 0;
-    display: none;
-  }
-
-  .slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .slide.active { opacity: 1; }
-
-  /* Slide 1 - declaração */
-  #slide-0 {
-    background: linear-gradient(160deg, #fff0f6 0%, #fce4ec 60%, #f8bbd0 100%);
-    flex-direction: column;
-    padding: 2rem;
-    text-align: center;
-  }
-
-  #slide-0 .petals {
-    font-size: 2.5rem;
-    letter-spacing: .5rem;
-    margin-bottom: 1.5rem;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  #slide-0 h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 6vw, 3.5rem);
-    color: var(--wine);
-    line-height: 1.3;
-    margin-bottom: 1.5rem;
-  }
-
-  #slide-0 p {
-    font-size: clamp(1rem, 3vw, 1.3rem);
-    color: #7a3050;
-    line-height: 1.9;
-    max-width: 600px;
-    font-style: italic;
-  }
-
-  #slide-0 .divider {
-    width: 80px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--rose), transparent);
-    margin: 1.5rem auto;
-  }
-
-  /* Slides de foto */
-  .slide-photo {
-    background: #1a0a10;
-  }
-
-  .slide-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.88;
-  }
-
-  .slide-photo .caption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2rem 2rem 3rem;
-    background: linear-gradient(transparent, rgba(26,10,16,0.75));
-    color: #fff;
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1rem, 3vw, 1.4rem);
-    font-style: italic;
-    text-align: center;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-  }
-
-  /* Slide final - buque */
-  #slide-final {
-    background: linear-gradient(160deg, #1a0010 0%, #3d0020 50%, #1a0010 100%);
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 2rem;
-    text-align: center;
-  }
-
-  .roses-container {
-    font-size: clamp(4rem, 15vw, 8rem);
-    line-height: 1;
-    animation: roseBloom 2s ease-out forwards;
-    filter: drop-shadow(0 0 30px rgba(220,50,80,0.6));
-  }
-
-  #slide-final h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.5rem, 10vw, 6rem);
-    color: #fff;
-    letter-spacing: .1em;
-    text-shadow: 0 0 40px rgba(232,160,176,0.8), 0 0 80px rgba(232,160,176,0.4);
-    animation: glowPulse 2s ease-in-out infinite;
-  }
-
-  #slide-final p {
-    color: var(--rose);
-    font-size: clamp(.9rem, 2.5vw, 1.2rem);
-    letter-spacing: .15em;
-    text-transform: uppercase;
-  }
-
-  /* ── NAVIGATION ── */
-  #nav {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    z-index: 50;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    padding: .6rem 1.2rem;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-
-  .nav-btn {
-    background: rgba(255,255,255,0.25);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: #fff;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background .2s;
-  }
-
-  .nav-btn:hover { background: rgba(255,255,255,0.45); }
-
-  #dots {
-    display: flex;
-    gap: .4rem;
-  }
-
-  .dot {
-    width: .5rem;
-    height: .5rem;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.4);
-    transition: background .3s, transform .3s;
-    cursor: pointer;
-  }
-
-  .dot.active {
-    background: #fff;
-    transform: scale(1.4);
-  }
-
-  /* ── QR PANEL ── */
-  #qr-panel {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 1rem;
-    z-index: 60;
-    text-align: center;
-    display: none;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-  }
-
-  #qr-panel canvas { border-radius: 8px; }
-  #qr-panel p { font-size: .7rem; color: #888; margin-top: .4rem; }
-
-  #btn-qr {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(139,34,82,0.85);
-    color: #fff;
-    border: none;
-    padding: .5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .85rem;
-    z-index: 59;
-    display: none;
-    backdrop-filter: blur(10px);
-  }
-
-  /* ── MUSIC BAR ── */
-  #music-bar {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
-    border-radius: 50px;
-    padding: .4rem 1rem;
-    display: none;
-    align-items: center;
-    gap: .5rem;
-    z-index: 60;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-
-  #music-bar .note { font-size: 1rem; animation: bounce 0.8s ease-in-out infinite alternate; }
-  #music-bar span { color: #fff; font-size: .75rem; letter-spacing: .05em; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  @keyframes roseBloom {
-    from { transform: scale(0) rotate(-20deg); opacity: 0; }
-    to { transform: scale(1) rotate(0deg); opacity: 1; }
-  }
-
-  @keyframes glowPulse {
-    0%, 100% { text-shadow: 0 0 40px rgba(232,160,176,0.8), 0 0 80px rgba(232,160,176,0.4); }
-    50% { text-shadow: 0 0 60px rgba(232,160,176,1), 0 0 120px rgba(232,160,176,0.6); }
-  }
-
-  @keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-4px); }
-  }
-
-  /* ── HIDDEN YOUTUBE ── */
-  #yt-frame {
-    position: fixed;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-    top: -999px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Dia dos Namorados, Minha Vida!</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe3e3 0%, #fbc2eb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        #envelope-intro {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #ff758c 0%, #ff7eb3 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 999; color: white; text-align: center; padding: 20px; transition: opacity 0.8s ease;
+        }
+        #envelope-intro h1 { font-size: 2.5rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .btn-abrir {
+            padding: 15px 40px; font-size: 1.2rem; background-color: white; color: #ff758c;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+        .btn-abrir:hover { transform: scale(1.05); }
+        .cartao-container {
+            width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;
+            opacity: 0; transform: scale(0.9); transition: all 1s ease 0.5s;
+        }
+        .cartao-container.visivel { opacity: 1; transform: scale(1); }
+        h2 { color: #d63031; font-size: 1.8rem; margin-bottom: 15px; }
+        p { color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; }
+        .galeria { position: relative; width: 100%; height: 320px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 20px; background-color: #f0f0f0; }
+        .galeria img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease-in-out; }
+        .galeria img.ativa { opacity: 1; }
+        .coracao { position: absolute; color: #ff7675; font-size: 1.5rem; pointer-events: none; animation: flutuar 4s linear infinite; opacity: 0; }
+        @keyframes flutuar {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- INTRO -->
-<div id="intro">
-  <div class="heart-big">💗</div>
-  <h1>Uma surpresa feita<br>especialmente para você</h1>
-  <p>Toque para abrir</p>
-  <button id="btn-start">Abrir presente 🌹</button>
-</div>
+    <audio id="musica-romantica" loop>
+        <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3" type="audio/mpeg">
+        <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3.mp3" type="audio/mpeg">
+    </audio>
 
-<!-- MUSIC BAR -->
-<div id="music-bar">
-  <span class="note">♪</span>
-  <span>I Can't Stop Lovin' You - Van Halen</span>
-</div>
+    <div id="envelope-intro">
+        <h1>Você recebeu uma surpresa de amor! ❤️</h1>
+        <button class="btn-abrir" onclick="abrirCartao()">Clique para Abrir</button>
+    </div>
 
-<!-- QR BUTTON -->
-<button id="btn-qr" onclick="toggleQR()">📱 QR Code</button>
-<div id="qr-panel">
-  <canvas id="qr-canvas"></canvas>
-  <p>Escaneie para abrir<br>no celular</p>
-</div>
+    <div class="cartao-container" id="meu-cartao">
+        <h2>Feliz Dia dos Namorados! ❤️</h2>
+        <div class="galeria" id="galeria-fotos"></div>
+        <p>
+            Hoje é o nosso dia, mas o presente diário é ter você na minha vida. Cada momento ao seu lado é especial, cheio de sorrisos e cumplicidade. Que o nosso amor continue crescendo e se fortalecendo a cada amanhecer. Te amo daqui até a eternidade!
+        </p>
+    </div>
 
-<!-- SLIDESHOW -->
-<div id="slideshow">
+    <script>
+        const galeriaContainer = document.getElementById('galeria-fotos');
+        let primeira = true;
 
-  <!-- SLIDE 0: Declaração -->
-  <div class="slide" id="slide-0">
-    <div class="petals">🌸 🌹 🌸</div>
-    <h2>Você é<br>a melhor parte<br>de mim.</h2>
-    <div class="divider"></div>
-    <p>
-      Cada momento ao seu lado virou memória que eu quero guardar para sempre.<br>
-      Cada foto aqui é uma prova de que a gente construiu algo muito real.<br><br>
-      Feliz Dia dos Namorados, meu amor.
-    </p>
-  </div>
+        // Função que gera variações de extensão para garantir que o navegador ache a foto
+        function adicionarImagemComVariacoes(nomeBase) {
+            // Cria imagem tentando .jpeg
+            const imgJpeg = document.createElement('img');
+            imgJpeg.src = encodeURIComponent(nomeBase + ".jpeg");
+            imgJpeg.alt = "Nosso Momento";
+            
+            // Cria imagem tentando .JPEG maiúsculo
+            const imgJpegMaiusculo = document.createElement('img');
+            imgJpegMaiusculo.src = encodeURIComponent(nomeBase + ".JPEG");
+            imgJpegMaiusculo.alt = "Nosso Momento";
 
-  <!-- SLIDES DE FOTO (gerados via JS) -->
+            // Se for a primeiríssima imagem do carrossel, marca como ativa
+            if (primeira) {
+                imgJpeg.classList.add('ativa');
+                imgJpegMaiusculo.classList.add('ativa');
+                primeira = false;
+            }
 
-  <!-- SLIDE FINAL -->
-  <div class="slide" id="slide-final">
-    <div class="roses-container">🌹🌹🌹<br>🌹🌹🌹🌹<br>🌹🌹🌹</div>
-    <h2>Eu Te Amo.</h2>
-    <p>Hoje e sempre ✨</p>
-  </div>
+            // Adiciona ambos os nós para o navegador carregar o que for válido
+            imgJpeg.onerror = function() { this.style.display = 'none'; };
+            imgJpegMaiusculo.onerror = function() { this.style.display = 'none'; };
 
-</div>
+            galeriaContainer.appendChild(imgJpeg);
+            galeriaContainer.appendChild(imgJpegMaiusculo);
+        }
 
-<!-- NAV -->
-<div id="nav" style="display:none;">
-  <button class="nav-btn" id="btn-prev">&#8249;</button>
-  <div id="dots"></div>
-  <button class="nav-btn" id="btn-next">&#8250;</button>
-</div>
+        // Fotos iniciais avulsas (Removido o .jpeg fixo para tratar dinamicamente)
+        const fotosIniciais = [
+            "IMG-20230407-WA0040_Original", "IMG-20230416-WA0019_Original",
+            "IMG-20230528-WA0009_Original", "IMG-20230529-WA0003_Original",
+            "IMG-20230529-WA0004_Original", "IMG-20240824-WA0029_Original",
+            "IMG-20240824-WA0030_Original", "IMG_0904_Original", "IMG_1449_Original",
+            "IMG_20230416_151209_HDR_Original", "IMG_20230416_160029_Original",
+            "IMG_20230528-155527_Original", "IMG_20240915_144310_Original",
+            "IMG_20240915_191105_Original", "IMG_20240915_191107_Original",
+            "IMG_2760", "IMG_2944_Original", "IMG_4059_Original"
+        ];
 
-<!-- YOUTUBE EMBED INVISÍVEL -->
-<iframe id="yt-frame"
-  src="about:blank"
-  frameborder="0"
-  allow="autoplay; encrypted-media"
-  allowfullscreen>
-</iframe>
+        fotosIniciais.forEach(foto => adicionarImagemComVariacoes(foto));
 
-<!-- QR CODE LIBRARY -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        // Fotos sequenciais de blocos do WhatsApp
+        const blocos = [
+            { data: "2026-06-12 at 14.35.19", max: 3 },
+            { data: "2026-06-12 at 14.35.20", max: 3 },
+            { data: "2026-06-12 at 14.35.21", max: 17 }
+        ];
 
-<script>
-// ── FOTOS: base64 das imagens enviadas ──────────────────────
-// As imagens abaixo são carregadas via URL de blob temporário
-// Para uso offline/hospedado, substitua pelos caminhos reais
+        blocos.forEach(bloco => {
+            adicionarImagemComVariacoes(`WhatsApp Image ${bloco.data}`);
+            for (let i = 1; i <= bloco.max; i++) {
+                adicionarImagemComVariacoes(`WhatsApp Image ${bloco.data} (${i})`);
+            }
+        });
 
-const photoSources = [
-  // Carregamos via fetch das imagens já no contexto do browser
-  // Usamos as imagens diretamente da memória da conversa
-];
+        function abrirCartao() {
+            const intro = document.getElementById('envelope-intro');
+            const cartao = document.getElementById('meu-cartao');
+            const musica = document.getElementById('musica-romantica');
 
-const captions = [
-  "A gente junto em qualquer lugar vira o melhor lugar do mundo.",
-  "Felicidade tem o seu rosto.",
-  "Cada sorriso seu é meu momento favorito.",
-  "Onde você estiver, eu quero estar também.",
-  "Você faz tudo ficar mais bonito.",
-  "Minha parceira, minha melhor amiga, meu amor.",
-  "Nós dois contra o mundo — e eu escolho você toda vez.",
-  "A vida ficou mais leve quando você chegou.",
-  "Com você, cada aventura vale a pena.",
-  "Você é o meu lar.",
-  "Rock, amor e você — minha playlist favorita.",
-  "Nenhum palco é grande o suficiente para conter o que sinto.",
-  "Você me olha e eu já me sinto em casa.",
-  "Agosto com você virou mês favorito.",
-  "Viagens, estradas, e sempre você ao meu lado.",
-  "Jaqueta nova, mas o amor por você é antigo e eterno.",
-  "Setembro de 2024: um dos melhores dias da minha vida.",
-  "Deitados no gramado, sem pressa, só a gente.",
-  "Na frente do palco ou no fundo da multidão — com você é sempre especial.",
-  "Rock in Rio e você. Não precisa de mais nada.",
-];
+            musica.volume = 0.8;
+            
+            // Força a tentativa de reprodução das duas tracks possíveis
+            const aspasAudio = musica.play();
+            if (aspasAudio !== undefined) {
+                aspasAudio.catch(error => {
+                    console.log("Tentando canal alternativo de áudio...");
+                    musica.src = "Van Halen - Cant Stop Lovin You Official Music Video.mp3.mp3";
+                    musica.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
+                });
+            }
 
-// ── ESTADO ──────────────────────────────────────────────────
-let current = 0;
-let totalSlides = 0;
-let autoTimer = null;
-const INTERVAL = 5000;
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                cartao.classList.add('visivel');
+            }, 800);
 
-// ── INICIALIZAÇÃO ────────────────────────────────────────────
-document.getElementById('btn-start').addEventListener('click', startShow);
+            setInterval(criarCoracao, 300);
+            
+            // Rotação do carrossel ignorando imagens ocultas/com erro
+            setInterval(() => {
+                const imagens = Array.from(document.querySelectorAll('.galeria img')).filter(img => img.style.display !== 'none');
+                let indexAtivo = imagens.findIndex(img => img.classList.contains('ativa'));
+                
+                if (imagens.length > 0) {
+                    if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
+                    let proximoIndex = (indexAtivo + 1) % imagens.length;
+                    imagens[proximoIndex].classList.add('ativa');
+                }
+            }, 3000);
+        }
 
-function startShow() {
-  document.getElementById('intro').style.display = 'none';
-  document.getElementById('slideshow').style.display = 'block';
-  document.getElementById('nav').style.display = 'flex';
-  document.getElementById('music-bar').style.display = 'flex';
-  document.getElementById('btn-qr').style.display = 'block';
-
-  buildPhotoSlides();
-  buildDots();
-  goTo(0);
-  startAuto();
-  playMusic();
-  generateQR();
-}
-
-// ── CONSTRUÇÃO DOS SLIDES DE FOTO ────────────────────────────
-function buildPhotoSlides() {
-  const slideshow = document.getElementById('slideshow');
-  const finalSlide = document.getElementById('slide-final');
-
-  // Lista de imagens enviadas (caminhos relativos ao contexto)
-  const imgFiles = [
-    '1000015171.jpeg',
-    'D5BABB02-55F0-4997-AD66-DEBAB0430BB9.jpg',
-    'IMG-20230528-WA0009.jpg',
-    'IMG-20230529-WA0003.jpg',
-    'IMG-20230528-WA0008.jpg',
-    '2ad13bfa-2f69-4a4d-8950-501c7766710a.jpg',
-    '13B47BA3-C694-4573-B9BB-BEEBB092D288.jpg',
-    '7F89837C-E071-41DF-8FB6-D95830B89BD8.jpg',
-    '4cec80ac-8349-4887-bc3c-d34c67b106bc.jpg',
-    'IMG_2944.PNG',
-    'IMG_4059.jpeg',
-    'IMG_4061.jpeg',
-    'cd24bc4b827c10b37d90e27f046efa8f.jpg',
-    'IMG_20240824_152707.jpg',
-    'IMG-20240824-WA0029.jpg',
-    'IMG-20240824-WA0030.jpg',
-    'IMG_20240915_144310.jpg',
-    'IMG_20240915_155059.jpg',
-    'IMG_20240915_155226.jpg',
-    'IMG_20240915_191107.jpg',
-  ];
-
-  imgFiles.forEach((file, i) => {
-    const div = document.createElement('div');
-    div.className = 'slide slide-photo';
-    div.id = 'slide-photo-' + i;
-
-    const img = document.createElement('img');
-    // Tenta carregar como blob URL ou caminho relativo
-    img.src = file;
-    img.alt = 'Memória ' + (i + 1);
-    img.onerror = function() {
-      // fallback: fundo de cor com emoji
-      div.style.background = `linear-gradient(135deg, #3d1020, #8b2252)`;
-      img.style.display = 'none';
-    };
-
-    const caption = document.createElement('div');
-    caption.className = 'caption';
-    caption.textContent = captions[i] || '❤';
-
-    div.appendChild(img);
-    div.appendChild(caption);
-
-    // Insere antes do slide final
-    slideshow.insertBefore(div, finalSlide);
-  });
-
-  // Total de slides: 1 (declaração) + fotos + 1 (final)
-  totalSlides = 1 + imgFiles.length + 1;
-}
-
-// ── DOTS ─────────────────────────────────────────────────────
-function buildDots() {
-  const container = document.getElementById('dots');
-  container.innerHTML = '';
-  for (let i = 0; i < totalSlides; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.addEventListener('click', () => goTo(i));
-    container.appendChild(d);
-  }
-}
-
-function updateDots() {
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('active', i === current);
-  });
-}
-
-// ── NAVEGAÇÃO ────────────────────────────────────────────────
-function getAllSlides() {
-  return document.querySelectorAll('.slide');
-}
-
-function goTo(index) {
-  const slides = getAllSlides();
-  slides[current]?.classList.remove('active');
-  current = (index + totalSlides) % totalSlides;
-  slides[current]?.classList.add('active');
-  updateDots();
-}
-
-function startAuto() {
-  clearInterval(autoTimer);
-  autoTimer = setInterval(() => {
-    goTo(current + 1);
-  }, INTERVAL);
-}
-
-document.getElementById('btn-next').addEventListener('click', () => {
-  goTo(current + 1);
-  startAuto();
-});
-
-document.getElementById('btn-prev').addEventListener('click', () => {
-  goTo(current - 1);
-  startAuto();
-});
-
-// Swipe suporte mobile
-let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 40) {
-    dx < 0 ? goTo(current + 1) : goTo(current - 1);
-    startAuto();
-  }
-});
-
-// ── MÚSICA ───────────────────────────────────────────────────
-function playMusic() {
-  // I Can't Stop Lovin' You - Van Halen (YouTube)
-  const videoId = 'XSgMX1VThgs';
-  const frame = document.getElementById('yt-frame');
-  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&mute=0`;
-}
-
-// ── QR CODE ──────────────────────────────────────────────────
-function generateQR() {
-  const url = window.location.href;
-  try {
-    new QRCode(document.getElementById('qr-canvas'), {
-      text: url,
-      width: 120,
-      height: 120,
-      colorDark: '#8b2252',
-      colorLight: '#fff8f5',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  } catch(e) {
-    console.log('QR:', e);
-  }
-}
-
-function toggleQR() {
-  const panel = document.getElementById('qr-panel');
-  const btn = document.getElementById('btn-qr');
-  const visible = panel.style.display === 'block';
-  panel.style.display = visible ? 'none' : 'block';
-  btn.style.display = visible ? 'block' : 'none';
-  if (!visible) {
-    setTimeout(() => { btn.style.display = 'block'; }, 5000);
-  }
-}
-</script>
+        function criarCoracao() {
+            const coracao = document.createElement('div');
+            coracao.classList.add('coracao');
+            coracao.innerText = '❤️';
+            coracao.style.left = Math.random() * 100 + 'vw';
+            coracao.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(coracao);
+            setTimeout(() => { coracao.remove(); }, 5000);
+        }
+    </script>
 </body>
 </html>
