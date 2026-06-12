@@ -37,7 +37,7 @@
         h2 { color: #d63031; font-size: 1.8rem; margin-bottom: 15px; }
         p { color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; }
         .galeria { position: relative; width: 100%; height: 320px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 20px; background-color: #f0f0f0; }
-        .galeria img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease-in-out; }
+        .galeria img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .galeria img.ativa { opacity: 1; }
         .coracao { position: absolute; color: #ff7675; font-size: 1.5rem; pointer-events: none; animation: flutuar 4s linear infinite; opacity: 0; }
         @keyframes flutuar {
@@ -75,6 +75,12 @@
             const img = document.createElement('img');
             img.src = encodeURIComponent(nomeCompleto);
             img.alt = "Nosso Momento";
+            
+            // Tratamento de erro individual: se uma foto falhar, ela não quebra o carrossel
+            img.onerror = function() {
+                this.remove();
+            };
+
             if (primeira) {
                 img.classList.add('ativa');
                 primeira = false;
@@ -82,29 +88,17 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Lista exata de arquivos que vimos nas suas telas carregadas no GitHub
-        const fotosFixas = [
-            "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
-            "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
-            "IMG-20230529-WA0004_Original.jpeg", "IMG-20240824-WA0029_Original.jpeg",
-            "IMG-20240824-WA0030_Original.jpeg", "IMG_0904_Original.jpeg",
-            "IMG_1449_Original.jpeg", "IMG_20230416_151209_HDR_Original.jpeg",
-            "IMG_20230416_160029_Original.jpeg", "IMG_20230528-155527_Original.jpeg",
-            "IMG_20240915_144310_Original.jpeg", "IMG_20240915_191105_Original.jpeg",
-            "IMG_20240915_191107_Original.jpeg", "IMG_2760.jpeg", "IMG_2944_Original.jpeg",
-            "IMG_4059_Original.jpeg"
-        ];
-
-        fotosFixas.forEach(foto => inserirFoto(foto));
-
-        // Blocos do WhatsApp
+        // Bloco 14.35.19
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.19.jpeg");
-        for (let i = 1; i <= 2; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
+        for (let i = 0; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
 
+        // Bloco 14.35.20
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
-        for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
+        for (let i = 0; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
 
-        for (let i = 1; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
+        // Bloco 14.35.21
+        inserirFoto("WhatsApp Image 2026-06-12 at 14.35.21.jpeg");
+        for (let i = 0; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
 
         function abrirCartao() {
             const intro = document.getElementById('envelope-intro');
@@ -112,7 +106,12 @@
             const musica = document.getElementById('musica-romantica');
 
             musica.volume = 0.7;
-            musica.play().catch(err => console.log("Áudio ativado"));
+            
+            // Tenta tocar a música. Se o navegador travar por privacidade, ele tenta de novo
+            musica.play().catch(() => {
+                console.log("Aguardando clique definitivo do usuário.");
+                document.body.addEventListener('click', () => { musica.play(); }, { once: true });
+            });
 
             intro.style.opacity = '0';
             setTimeout(() => {
@@ -122,13 +121,15 @@
 
             setInterval(criarCoracao, 300);
             
-            const imagens = document.querySelectorAll('.galeria img');
-            let indexAtual = 0;
+            // Troca de fotos ativa
             setInterval(() => {
+                const imagens = document.querySelectorAll('.galeria img');
+                let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
+                
                 if (imagens.length > 0) {
-                    imagens[indexAtual].classList.remove('ativa');
-                    indexAtual = (indexAtual + 1) % imagens.length;
-                    imagens[indexAtual].classList.add('ativa');
+                    if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
+                    let proximoIndex = (indexAtivo + 1) % imagens.length;
+                    imagens[proximoIndex].classList.add('ativa');
                 }
             }, 3000);
         }
