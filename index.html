@@ -50,7 +50,7 @@
 </head>
 <body>
 
-    <audio id="musica-romantica" loop>
+    <audio id="musica-romantica" loop preload="auto">
         <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3" type="audio/mpeg">
     </audio>
 
@@ -76,9 +76,8 @@
             img.src = encodeURIComponent(nomeCompleto);
             img.alt = "Nosso Momento";
             
-            // Tratamento de erro individual: se uma foto falhar, ela não quebra o carrossel
             img.onerror = function() {
-                this.remove();
+                this.remove(); // Remove links quebrados para não travar a tela
             };
 
             if (primeira) {
@@ -88,30 +87,47 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Bloco 14.35.19
+        // 1. LISTA COMPLETA DAS FOTOS COM FORMATO "IMG" DO SEU REPOSITÓRIO
+        const fotosImg = [
+            "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
+            "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
+            "IMG-20230529-WA0004_Original.jpeg", "IMG-20240824-WA0029_Original.jpeg",
+            "IMG-20240824-WA0030_Original.jpeg", "IMG_0904_Original.jpeg",
+            "IMG_1449_Original.jpeg", "IMG_20230416_151209_HDR_Original.jpeg",
+            "IMG_20230416_160029_Original.jpeg", "IMG_20230528-155527_Original.jpeg",
+            "IMG_20240915_144310_Original.jpeg", "IMG_20240915_191105_Original.jpeg",
+            "IMG_20240915_191107_Original.jpeg", "IMG_2760.jpeg", "IMG_2944_Original.jpeg",
+            "IMG_4059_Original.jpeg"
+        ];
+        fotosImg.forEach(foto => inserirFoto(foto));
+
+        // 2. LISTA COMPLETA DAS FOTOS DO WHATSAPP DO SEU REPOSITÓRIO
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.19.jpeg");
-        for (let i = 0; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
+        for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
 
-        // Bloco 14.35.20
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
-        for (let i = 0; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
+        for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
 
-        // Bloco 14.35.21
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.21.jpeg");
-        for (let i = 0; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
+        for (let i = 1; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
+
 
         function abrirCartao() {
             const intro = document.getElementById('envelope-intro');
             const cartao = document.getElementById('meu-cartao');
             const musica = document.getElementById('musica-romantica');
 
-            musica.volume = 0.7;
-            
-            // Tenta tocar a música. Se o navegador travar por privacidade, ele tenta de novo
-            musica.play().catch(() => {
-                console.log("Aguardando clique definitivo do usuário.");
-                document.body.addEventListener('click', () => { musica.play(); }, { once: true });
-            });
+            // Configuração forçada de som para vencer o bloqueio do navegador
+            musica.volume = 0.8;
+            var tocando = musica.play();
+
+            if (tocando !== undefined) {
+                tocando.catch(error => {
+                    // Se o navegador bloquear no primeiro clique, força ao tocar na tela de novo
+                    console.log("Ajustando permissão de áudio...");
+                    document.body.addEventListener('click', () => { musica.play(); }, { once: true });
+                });
+            }
 
             intro.style.opacity = '0';
             setTimeout(() => {
@@ -121,7 +137,7 @@
 
             setInterval(criarCoracao, 300);
             
-            // Troca de fotos ativa
+            // Controle estável do Carrossel de Fotos
             setInterval(() => {
                 const imagens = document.querySelectorAll('.galeria img');
                 let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
