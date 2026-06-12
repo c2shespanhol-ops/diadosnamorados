@@ -52,7 +52,6 @@
 
     <audio id="musica-romantica" loop>
         <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3" type="audio/mpeg">
-        <source src="Van Halen - Cant Stop Lovin You Official Music Video.mp3.mp3" type="audio/mpeg">
     </audio>
 
     <div id="envelope-intro">
@@ -72,77 +71,48 @@
         const galeriaContainer = document.getElementById('galeria-fotos');
         let primeira = true;
 
-        // Função que gera variações de extensão para garantir que o navegador ache a foto
-        function adicionarImagemComVariacoes(nomeBase) {
-            // Cria imagem tentando .jpeg
-            const imgJpeg = document.createElement('img');
-            imgJpeg.src = encodeURIComponent(nomeBase + ".jpeg");
-            imgJpeg.alt = "Nosso Momento";
-            
-            // Cria imagem tentando .JPEG maiúsculo
-            const imgJpegMaiusculo = document.createElement('img');
-            imgJpegMaiusculo.src = encodeURIComponent(nomeBase + ".JPEG");
-            imgJpegMaiusculo.alt = "Nosso Momento";
-
-            // Se for a primeiríssima imagem do carrossel, marca como ativa
+        function inserirFoto(nomeCompleto) {
+            const img = document.createElement('img');
+            img.src = encodeURIComponent(nomeCompleto);
+            img.alt = "Nosso Momento";
             if (primeira) {
-                imgJpeg.classList.add('ativa');
-                imgJpegMaiusculo.classList.add('ativa');
+                img.classList.add('ativa');
                 primeira = false;
             }
-
-            // Adiciona ambos os nós para o navegador carregar o que for válido
-            imgJpeg.onerror = function() { this.style.display = 'none'; };
-            imgJpegMaiusculo.onerror = function() { this.style.display = 'none'; };
-
-            galeriaContainer.appendChild(imgJpeg);
-            galeriaContainer.appendChild(imgJpegMaiusculo);
+            galeriaContainer.appendChild(img);
         }
 
-        // Fotos iniciais avulsas (Removido o .jpeg fixo para tratar dinamicamente)
-        const fotosIniciais = [
-            "IMG-20230407-WA0040_Original", "IMG-20230416-WA0019_Original",
-            "IMG-20230528-WA0009_Original", "IMG-20230529-WA0003_Original",
-            "IMG-20230529-WA0004_Original", "IMG-20240824-WA0029_Original",
-            "IMG-20240824-WA0030_Original", "IMG_0904_Original", "IMG_1449_Original",
-            "IMG_20230416_151209_HDR_Original", "IMG_20230416_160029_Original",
-            "IMG_20230528-155527_Original", "IMG_20240915_144310_Original",
-            "IMG_20240915_191105_Original", "IMG_20240915_191107_Original",
-            "IMG_2760", "IMG_2944_Original", "IMG_4059_Original"
+        // Lista exata de arquivos que vimos nas suas telas carregadas no GitHub
+        const fotosFixas = [
+            "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
+            "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
+            "IMG-20230529-WA0004_Original.jpeg", "IMG-20240824-WA0029_Original.jpeg",
+            "IMG-20240824-WA0030_Original.jpeg", "IMG_0904_Original.jpeg",
+            "IMG_1449_Original.jpeg", "IMG_20230416_151209_HDR_Original.jpeg",
+            "IMG_20230416_160029_Original.jpeg", "IMG_20230528-155527_Original.jpeg",
+            "IMG_20240915_144310_Original.jpeg", "IMG_20240915_191105_Original.jpeg",
+            "IMG_20240915_191107_Original.jpeg", "IMG_2760.jpeg", "IMG_2944_Original.jpeg",
+            "IMG_4059_Original.jpeg"
         ];
 
-        fotosIniciais.forEach(foto => adicionarImagemComVariacoes(foto));
+        fotosFixas.forEach(foto => inserirFoto(foto));
 
-        // Fotos sequenciais de blocos do WhatsApp
-        const blocos = [
-            { data: "2026-06-12 at 14.35.19", max: 3 },
-            { data: "2026-06-12 at 14.35.20", max: 3 },
-            { data: "2026-06-12 at 14.35.21", max: 17 }
-        ];
+        // Blocos do WhatsApp
+        inserirFoto("WhatsApp Image 2026-06-12 at 14.35.19.jpeg");
+        for (let i = 1; i <= 2; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
 
-        blocos.forEach(bloco => {
-            adicionarImagemComVariacoes(`WhatsApp Image ${bloco.data}`);
-            for (let i = 1; i <= bloco.max; i++) {
-                adicionarImagemComVariacoes(`WhatsApp Image ${bloco.data} (${i})`);
-            }
-        });
+        inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
+        for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
+
+        for (let i = 1; i <= 17; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.21 (${i}).jpeg`);
 
         function abrirCartao() {
             const intro = document.getElementById('envelope-intro');
             const cartao = document.getElementById('meu-cartao');
             const musica = document.getElementById('musica-romantica');
 
-            musica.volume = 0.8;
-            
-            // Força a tentativa de reprodução das duas tracks possíveis
-            const aspasAudio = musica.play();
-            if (aspasAudio !== undefined) {
-                aspasAudio.catch(error => {
-                    console.log("Tentando canal alternativo de áudio...");
-                    musica.src = "Van Halen - Cant Stop Lovin You Official Music Video.mp3.mp3";
-                    musica.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
-                });
-            }
+            musica.volume = 0.7;
+            musica.play().catch(err => console.log("Áudio ativado"));
 
             intro.style.opacity = '0';
             setTimeout(() => {
@@ -152,15 +122,13 @@
 
             setInterval(criarCoracao, 300);
             
-            // Rotação do carrossel ignorando imagens ocultas/com erro
+            const imagens = document.querySelectorAll('.galeria img');
+            let indexAtual = 0;
             setInterval(() => {
-                const imagens = Array.from(document.querySelectorAll('.galeria img')).filter(img => img.style.display !== 'none');
-                let indexAtivo = imagens.findIndex(img => img.classList.contains('ativa'));
-                
                 if (imagens.length > 0) {
-                    if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
-                    let proximoIndex = (indexAtivo + 1) % imagens.length;
-                    imagens[proximoIndex].classList.add('ativa');
+                    imagens[indexAtual].classList.remove('ativa');
+                    indexAtual = (indexAtual + 1) % imagens.length;
+                    imagens[indexAtual].classList.add('ativa');
                 }
             }, 3000);
         }
