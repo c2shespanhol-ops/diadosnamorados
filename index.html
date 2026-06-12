@@ -98,7 +98,7 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Suas fotos do carrossel permanecem idênticas
+        // Mantendo seu carrossel de fotos intacto
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -158,9 +158,10 @@
             galeriaContainer.innerHTML = '';
 
             const imgFinal = document.createElement('img');
-            // NOVO LINK EXCLUSIVO: Um buquê real de rosas vermelhas, grandes, abertas e bem distribuídas no contêiner
-            imgFinal.src = "https://images.unsplash.com/photo-1574482620826-40685ca5ebd2?q=80&w=600&auto=format&fit=crop"; 
-            imgFinal.alt = "Buquê Imponente de Rosas Vermelhas";
+            
+            // O segredo técnico do sucesso: Adiciona um número único baseado no tempo para quebrar qualquer cache de imagem
+            imgFinal.src = "pedido.jpg?v=" + new Date().getTime(); 
+            imgFinal.alt = "Nosso Buquê de Rosas";
             
             imgFinal.style.opacity = "1";
             imgFinal.style.position = "absolute";
