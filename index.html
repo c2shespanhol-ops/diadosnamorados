@@ -35,7 +35,7 @@
         }
         .cartao-container.visivel { opacity: 1; transform: scale(1); }
         h2 { color: #d63031; font-size: 1.8rem; margin-bottom: 15px; }
-        p { color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; }
+        #texto-mensagem { color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; transition: all 0.5s ease; }
         .galeria { position: relative; width: 100%; height: 320px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 20px; background-color: #f0f0f0; }
         .galeria img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .galeria img.ativa { opacity: 1; }
@@ -46,11 +46,24 @@
             90% { opacity: 0.6; }
             100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
+        .pedido-casamento {
+            color: #d63031 !important;
+            font-size: 1.5rem !important;
+            font-weight: bold;
+            animation: pulsar 1.5s infinite;
+            margin-top: 15px;
+            display: block;
+        }
+        @keyframes pulsar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
-    <audio id="musica-romantica" loop preload="auto">
+    <audio id="musica-romantica" preload="auto">
         <source src="musica.mp3" type="audio/mpeg">
     </audio>
 
@@ -60,9 +73,9 @@
     </div>
 
     <div class="cartao-container" id="meu-cartao">
-        <h2>Feliz Dia dos Namorados! ❤️</h2>
+        <h2 id="titulo-cartao">Feliz Dia dos Namorados! ❤️</h2>
         <div class="galeria" id="galeria-fotos"></div>
-        <p>
+        <p id="texto-mensagem">
             Hoje é o nosso dia, mas o presente diário é ter você na minha vida. Cada momento ao seu lado é especial, cheio de sorrisos e cumplicidade. Que o nosso amor continue crescendo e se fortalecendo a cada amanhecer. Te amo daqui até a eternidade!
         </p>
     </div>
@@ -70,16 +83,13 @@
     <script>
         const galeriaContainer = document.getElementById('galeria-fotos');
         let primeira = true;
+        let intervaloCarrossel;
 
         function inserirFoto(nomeCompleto) {
             const img = document.createElement('img');
             img.src = encodeURIComponent(nomeCompleto);
             img.alt = "Nosso Momento";
-            
-            img.onerror = function() {
-                this.remove();
-            };
-
+            img.onerror = function() { this.remove(); };
             if (primeira) {
                 img.classList.add('ativa');
                 primeira = false;
@@ -87,7 +97,7 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Fotos normais (mantidas ótimas)
+        // Suas fotos mantidas perfeitamente na lista do carrossel
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -101,11 +111,10 @@
         ];
         fotosImg.forEach(foto => inserirFoto(foto));
 
-        // Fotos WhatsApp
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.19.jpeg");
         for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.19 (${i}).jpeg`);
 
-        border = inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
+        inserirFoto("WhatsApp Image 2026-06-12 at 14.35.20.jpeg");
         for (let i = 1; i <= 3; i++) inserirFoto(`WhatsApp Image 2026-06-12 at 14.35.20 (${i}).jpeg`);
 
         inserirFoto("WhatsApp Image 2026-06-12 at 14.35.21.jpeg");
@@ -117,12 +126,12 @@
             const musica = document.getElementById('musica-romantica');
 
             musica.volume = 0.8;
-            
-            // Dá o play no clique do botão (regrade privacidade do navegador)
-            musica.play().catch(function(error) {
-                console.log("Ajuste de foco de áudio ativado.");
+            musica.play().catch(() => {
                 document.addEventListener('click', () => { musica.play(); }, { once: true });
             });
+
+            // Monitora o fim da música
+            musica.addEventListener('ended', dispararPedidoCasamento);
 
             intro.style.opacity = '0';
             setTimeout(() => {
@@ -131,17 +140,45 @@
             }, 800);
 
             setInterval(criarCoracao, 300);
+            intervaloCarrossel = setInterval(rodarCarrossel, 3000);
+        }
+
+        function rodarCarrossel() {
+            const imagens = document.querySelectorAll('.galeria img');
+            let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
+            if (imagens.length > 0) {
+                if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
+                let proximoIndex = (indexAtivo + 1) % imagens.length;
+                imagens[proximoIndex].classList.add('ativa');
+            }
+        }
+
+        function dispararPedidoCasamento() {
+            clearInterval(intervaloCarrossel);
+
+            // Apaga a foto que estava aparecendo no carrossel
+            const fotoAtiva = document.querySelector('.galeria img.ativa');
+            if (fotoAtiva) fotoAtiva.classList.remove('ativa');
+
+            // Busca especificamente a foto do buquê que já está na galeria e força ela a ficar ativa
+            const imagens = document.querySelectorAll('.galeria img');
+            let fotoBuque = Array.from(imagens).find(img => img.src.includes("IMG_2760.jpeg"));
+
+            if (fotoBuque) {
+                fotoBuque.classList.add('ativa');
+            } else {
+                // Caso o navegador se perca, cria uma nova instância dela para garantir o visual
+                const imgBackup = document.createElement('img');
+                imgBackup.src = encodeURIComponent("IMG_2760.jpeg");
+                imgBackup.classList.add('ativa');
+                galeriaContainer.appendChild(imgBackup);
+            }
+
+            // Atualiza a tela com o texto do grande momento
+            document.getElementById('titulo-cartao').innerText = "Olha para mim agora... ❤️";
             
-            setInterval(() => {
-                const imagens = document.querySelectorAll('.galeria img');
-                let indexAtivo = Array.from(imagens).findIndex(img => img.classList.contains('ativa'));
-                
-                if (imagens.length > 0) {
-                    if (indexAtivo !== -1) imagens[indexAtivo].classList.remove('ativa');
-                    let proximoIndex = (indexAtivo + 1) % imagens.length;
-                    imagens[proximoIndex].classList.add('ativa');
-                }
-            }, 3000);
+            const textoMensagem = document.getElementById('texto-mensagem');
+            textoMensagem.innerHTML = 'Passamos por tantos momentos lindos juntos e a nossa história é o meu maior orgulho. Eu não tenho dúvidas de que quero viver o resto dos meus dias ao seu lado.<br><br><span class="pedido-casamento">Quer casar comigo? 💍</span>';
         }
 
         function criarCoracao() {
