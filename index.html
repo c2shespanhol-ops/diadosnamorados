@@ -84,20 +84,13 @@
         const galeriaContainer = document.getElementById('galeria-fotos');
         let primeira = true;
         let intervaloCarrossel;
-        let elementoBuqueSecreto = null;
 
         function inserirFoto(nomeCompleto) {
             const img = document.createElement('img');
             img.src = encodeURIComponent(nomeCompleto);
             img.alt = "Nosso Momento";
-            
             img.onerror = function() { this.remove(); };
             
-            // MÉTODO INFALÍVEL: Identifica a foto que contém o número 2760 indepedente da extensão (.jpg, .jpeg, etc.)
-            if (nomeCompleto.includes("2760")) {
-                elementoBuqueSecreto = img;
-            }
-
             if (primeira) {
                 img.classList.add('ativa');
                 primeira = false;
@@ -105,6 +98,7 @@
             galeriaContainer.appendChild(img);
         }
 
+        // Suas fotos originais do carrossel
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -161,14 +155,23 @@
 
         function dispararPedidoCasamento() {
             clearInterval(intervaloCarrossel);
+            galeriaContainer.innerHTML = '';
 
-            const todasImagens = galeriaContainer.querySelectorAll('img');
-            todasImagens.forEach(img => img.classList.remove('ativa'));
+            // Puxa o novo arquivo limpo diretamente
+            const imgFinal = document.createElement('img');
+            imgFinal.src = "pedido.jpg"; 
+            imgFinal.alt = "Nosso Buquê";
+            
+            imgFinal.style.opacity = "1";
+            imgFinal.style.position = "absolute";
+            imgFinal.style.top = "0";
+            imgFinal.style.left = "0";
+            imgFinal.style.width = "100%";
+            imgFinal.style.height = "100%";
+            imgFinal.style.objectFit = "cover";
+            imgFinal.style.zIndex = "10";
 
-            // Resgata o elemento exato capturado no início
-            if (elementoBuqueSecreto) {
-                elementoBuqueSecreto.classList.add('ativa');
-            }
+            galeriaContainer.appendChild(imgFinal);
 
             document.getElementById('titulo-cartao').innerText = "Olha para mim agora... ❤️";
             const textoMensagem = document.getElementById('texto-mensagem');
