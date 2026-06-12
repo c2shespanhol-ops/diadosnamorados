@@ -97,7 +97,7 @@
             galeriaContainer.appendChild(img);
         }
 
-        // Suas fotos mantidas perfeitamente na lista do carrossel
+        // Suas fotos mantidas perfeitamente
         const fotosImg = [
             "IMG-20230407-WA0040_Original.jpeg", "IMG-20230416-WA0019_Original.jpeg",
             "IMG-20230528-WA0009_Original.jpeg", "IMG-20230529-WA0003_Original.jpeg",
@@ -130,7 +130,6 @@
                 document.addEventListener('click', () => { musica.play(); }, { once: true });
             });
 
-            // Monitora o fim da música
             musica.addEventListener('ended', dispararPedidoCasamento);
 
             intro.style.opacity = '0';
@@ -154,27 +153,24 @@
         }
 
         function dispararPedidoCasamento() {
+            // 1. Para o carrossel na hora
             clearInterval(intervaloCarrossel);
 
-            // Apaga a foto que estava aparecendo no carrossel
+            // 2. Apaga a foto atual que ficou visível
             const fotoAtiva = document.querySelector('.galeria img.ativa');
             if (fotoAtiva) fotoAtiva.classList.remove('ativa');
 
-            // Busca especificamente a foto do buquê que já está na galeria e força ela a ficar ativa
-            const imagens = document.querySelectorAll('.galeria img');
-            let fotoBuque = Array.from(imagens).find(img => img.src.includes("IMG_2760.jpeg"));
+            // 3. Limpa o container da galeria para receber apenas o buquê definitivo
+            galeriaContainer.innerHTML = '';
 
-            if (fotoBuque) {
-                fotoBuque.classList.add('ativa');
-            } else {
-                // Caso o navegador se perca, cria uma nova instância dela para garantir o visual
-                const imgBackup = document.createElement('img');
-                imgBackup.src = encodeURIComponent("IMG_2760.jpeg");
-                imgBackup.classList.add('ativa');
-                galeriaContainer.appendChild(imgBackup);
-            }
+            // 4. Cria a imagem do buquê apontando de forma direta e limpa para o seu arquivo
+            const imgBuque = document.createElement('img');
+            imgBuque.src = "IMG_2760.jpeg"; // Chamada direta sem filtros para o iOS aceitar
+            imgBuque.alt = "Nosso Buquê";
+            imgBuque.classList.add('ativa');
+            galeriaContainer.appendChild(imgBuque);
 
-            // Atualiza a tela com o texto do grande momento
+            // 5. Atualiza os textos da tela
             document.getElementById('titulo-cartao').innerText = "Olha para mim agora... ❤️";
             
             const textoMensagem = document.getElementById('texto-mensagem');
